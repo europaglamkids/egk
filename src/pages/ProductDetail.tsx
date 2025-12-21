@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, MessageCircle, Minus, Plus } from 'lucide-react';
 import { useProduct } from '@/hooks/useProducts';
 import { useCart } from '@/hooks/useCart';
+import { useExchangeRate } from '@/hooks/useExchangeRate';
 import { openWhatsAppWithProduct } from '@/lib/whatsapp';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +14,7 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading } = useProduct(id || '');
   const { addItem } = useCart();
+  const { convertToBolivares } = useExchangeRate();
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -103,9 +105,14 @@ const ProductDetail = () => {
             </Badge>
           </div>
 
-          <p className="text-3xl font-bold text-primary mb-6">
-            ${Number(product.price).toFixed(2)}
-          </p>
+          <div className="mb-6">
+            <p className="text-3xl font-bold text-primary">
+              ${Number(product.price).toFixed(2)}
+            </p>
+            <p className="text-lg text-muted-foreground">
+              Bs. {convertToBolivares(Number(product.price)).toFixed(2)}
+            </p>
+          </div>
 
           {product.description && (
             <p className="text-muted-foreground mb-6">{product.description}</p>

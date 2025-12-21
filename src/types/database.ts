@@ -67,3 +67,11 @@ export interface CartItem {
   size: string;
   quantity: number;
 }
+
+export interface Configuracion {
+  id: string;
+  clave: string;
+  valor: number;
+  created_at: string;
+  updated_at: string;
+}
