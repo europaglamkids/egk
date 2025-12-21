@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProductWithSizes } from '@/types/database';
 import { useCart } from '@/hooks/useCart';
+import { useExchangeRate } from '@/hooks/useExchangeRate';
 import { openWhatsAppWithProduct } from '@/lib/whatsapp';
 import { cn } from '@/lib/utils';
 
@@ -16,9 +17,11 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const { addItem } = useCart();
+  const { convertToBolivares } = useExchangeRate();
 
   const availableSizes = product.product_sizes.filter(s => s.stock > 0);
   const hasStock = availableSizes.length > 0;
+  const priceInBs = convertToBolivares(Number(product.price));
 
   const handleAddToCart = () => {
     if (selectedSize) {
@@ -62,9 +65,14 @@ export function ProductCard({ product }: ProductCardProps) {
           </Badge>
         </div>
 
-        <p className="text-xl font-bold text-primary mb-3">
-          ${Number(product.price).toFixed(2)}
-        </p>
+        <div className="mb-3">
+          <p className="text-xl font-bold text-primary">
+            ${Number(product.price).toFixed(2)}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Bs. {priceInBs.toFixed(2)}
+          </p>
+        </div>
 
         {hasStock ? (
           <div className="flex flex-wrap gap-1.5">
