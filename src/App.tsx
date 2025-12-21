@@ -16,6 +16,8 @@ import Cart from "./pages/Cart";
 import Auth from "./pages/Auth";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
+import AdminInventory from "./pages/admin/AdminInventory";
+import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminExpenses from "./pages/admin/AdminExpenses";
 import AdminSales from "./pages/admin/AdminSales";
 import NotFound from "./pages/NotFound";
@@ -47,6 +49,8 @@ const App = () => (
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="productos" element={<AdminProducts />} />
+                <Route path="inventario" element={<AdminInventory />} />
+                <Route path="clientes" element={<AdminCustomers />} />
                 <Route path="gastos" element={<AdminExpenses />} />
                 <Route path="ventas" element={<AdminSales />} />
               </Route>
