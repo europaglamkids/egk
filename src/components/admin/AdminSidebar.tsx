@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, DollarSign, TrendingUp, LogOut, Store } from 'lucide-react';
+import { LayoutDashboard, Package, DollarSign, TrendingUp, LogOut, Store, Users, Warehouse } from 'lucide-react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -8,6 +8,8 @@ import logo from '@/assets/logo.png';
 const navItems = [
   { href: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin/productos', icon: Package, label: 'Productos' },
+  { href: '/admin/inventario', icon: Warehouse, label: 'Inventario' },
+  { href: '/admin/clientes', icon: Users, label: 'Clientes' },
   { href: '/admin/gastos', icon: DollarSign, label: 'Gastos' },
   { href: '/admin/ventas', icon: TrendingUp, label: 'Ventas' },
 ];
