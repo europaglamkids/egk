@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Package, DollarSign, TrendingUp, LogOut, Store } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import logo from '@/assets/logo.png';
@@ -14,7 +14,11 @@ const navItems = [
 
 export function AdminSidebar() {
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { logout } = useAdminAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <aside className="w-64 bg-card border-r border-border flex flex-col">
@@ -48,7 +52,7 @@ export function AdminSidebar() {
             Ver Tienda
           </Button>
         </Link>
-        <Button variant="ghost" onClick={signOut} className="w-full gap-2 text-muted-foreground">
+        <Button variant="ghost" onClick={handleLogout} className="w-full gap-2 text-muted-foreground">
           <LogOut className="h-4 w-4" />
           Cerrar Sesión
         </Button>
