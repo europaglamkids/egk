@@ -73,7 +73,7 @@ export function useUpdateExchangeRate() {
         .update({ valor: newRate })
         .eq('clave', 'tasa_dolar')
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
