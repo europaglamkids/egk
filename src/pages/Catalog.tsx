@@ -21,9 +21,13 @@ const Catalog = () => {
     if (!selectedSize) return products;
 
     return products.filter(product =>
-      product.product_sizes.some(size =>
-        size.size === selectedSize && size.stock > 0
-      )
+      product.product_sizes.some(size => {
+        // Comparar tanto el formato "1-2" como "1-2 años"
+        const sizeMatches = size.size === selectedSize || 
+                           size.size === `${selectedSize} años` ||
+                           size.size.startsWith(selectedSize);
+        return sizeMatches && size.stock > 0;
+      })
     );
   }, [products, selectedSize]);
 
