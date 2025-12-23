@@ -196,6 +196,7 @@ export type Database = {
       sales: {
         Row: {
           created_at: string
+          customer_id: string | null
           id: string
           product_id: string | null
           product_name: string
@@ -207,6 +208,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          customer_id?: string | null
           id?: string
           product_id?: string | null
           product_name: string
@@ -218,6 +220,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          customer_id?: string | null
           id?: string
           product_id?: string | null
           product_name?: string
@@ -228,6 +231,13 @@ export type Database = {
           unit_price?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "sales_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sales_product_id_fkey"
             columns: ["product_id"]
