@@ -36,6 +36,17 @@ export interface Expense {
   created_at: string;
 }
 
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Sale {
   id: string;
   product_id: string | null;
@@ -45,7 +56,12 @@ export interface Sale {
   unit_price: number;
   total_amount: number;
   sale_date: string;
+  customer_id: string | null;
   created_at: string;
+}
+
+export interface SaleWithCustomer extends Sale {
+  customer?: Customer | null;
 }
 
 export interface Profile {
