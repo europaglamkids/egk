@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Product, ProductWithSizes, ProductSize, ProductCategory } from '@/types/database';
+import { Product, ProductWithSizes, ProductSize, ProductCategory, ProductImage } from '@/types/database';
 import { toast } from 'sonner';
 
 export function useProducts(category?: ProductCategory) {
@@ -11,7 +11,8 @@ export function useProducts(category?: ProductCategory) {
         .from('products')
         .select(`
           *,
-          product_sizes (*)
+          product_sizes (*),
+          product_images (*)
         `)
         .eq('is_active', true)
         .order('created_at', { ascending: false });
@@ -36,7 +37,8 @@ export function useAllProducts() {
         .from('products')
         .select(`
           *,
-          product_sizes (*)
+          product_sizes (*),
+          product_images (*)
         `)
         .order('created_at', { ascending: false });
 
@@ -54,7 +56,8 @@ export function useProduct(id: string) {
         .from('products')
         .select(`
           *,
-          product_sizes (*)
+          product_sizes (*),
+          product_images (*)
         `)
         .eq('id', id)
         .single();
@@ -219,6 +222,107 @@ export function useUploadProductImage() {
     },
     onError: (error) => {
       toast.error('Error al subir imagen: ' + error.message);
+    },
+  });
+}
+
+export function useAddProductImages() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (images: Omit<ProductImage, 'id' | 'created_at'>[]) => {
+      const { data, error } = await supabase
+        .from('product_images')
+        .insert(images)
+        .select();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+}
+
+export function useDeleteProductImage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('product_images')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+}
+
+export function useCreateProductWithSizes() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ 
+      product, 
+      sizes, 
+      additionalImages 
+    }: { 
+      product: Omit<Product, 'id' | 'created_at' | 'updated_at'>; 
+      sizes: { size: string; stock: number }[];
+      additionalImages: string[];
+    }) => {
+      // Create product
+      const { data: createdProduct, error: productError } = await supabase
+        .from('products')
+        .insert(product)
+        .select()
+        .single();
+
+      if (productError) throw productError;
+
+      // Add sizes if any
+      if (sizes.length > 0) {
+        const sizesData = sizes.map(s => ({
+          product_id: createdProduct.id,
+          size: s.size,
+          stock: s.stock,
+        }));
+
+        const { error: sizesError } = await supabase
+          .from('product_sizes')
+          .insert(sizesData);
+
+        if (sizesError) throw sizesError;
+      }
+
+      // Add additional images if any
+      if (additionalImages.length > 0) {
+        const imagesData = additionalImages.map((url, index) => ({
+          product_id: createdProduct.id,
+          image_url: url,
+          display_order: index + 1,
+        }));
+
+        const { error: imagesError } = await supabase
+          .from('product_images')
+          .insert(imagesData);
+
+        if (imagesError) throw imagesError;
+      }
+
+      return createdProduct;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast.success('Producto creado exitosamente');
+    },
+    onError: (error) => {
+      toast.error('Error al crear producto: ' + error.message);
     },
   });
 }

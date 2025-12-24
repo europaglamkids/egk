@@ -23,8 +23,17 @@ export interface ProductSize {
   created_at: string;
 }
 
+export interface ProductImage {
+  id: string;
+  product_id: string;
+  image_url: string;
+  display_order: number;
+  created_at: string;
+}
+
 export interface ProductWithSizes extends Product {
   product_sizes: ProductSize[];
+  product_images?: ProductImage[];
 }
 
 export interface Expense {
